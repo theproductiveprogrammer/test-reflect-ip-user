@@ -42,7 +42,7 @@ func reflect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := Req{"Test", "127.0.0.1"}
+	data := Req{"Test", r.RemoteAddr}
 
 	err = t.Execute(w, data)
 	if err != nil {
