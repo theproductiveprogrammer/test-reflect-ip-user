@@ -7,13 +7,13 @@ import (
 )
 
 func main() {
-	const PORT = "80"
+	const PORT = "6876"
 
 	http.HandleFunc("/", reflect)
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
 
 	fmt.Printf("\nServer started on port %s...\n", PORT)
-	http.ListenAndServe(":"+PORT, nil)
+	http.ListenAndServe("127.0.0.1:"+PORT, nil)
 }
 
 func reflect(w http.ResponseWriter, r *http.Request) {
