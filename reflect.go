@@ -42,7 +42,13 @@ func reflect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := Req{"Test", r.RemoteAddr}
+	user := "(USER NOT FOUND)"
+	vals, ok := r.URL.Query()["user"]
+	if ok && len(vals[0]) > 0 {
+		user = vals[0]
+	}
+
+	data := Req{user, r.RemoteAddr}
 
 	err = t.Execute(w, data)
 	if err != nil {
