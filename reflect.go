@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net"
 	"net/http"
+	"strings"
 )
 
 func main() {
@@ -49,7 +50,7 @@ func reflect(w http.ResponseWriter, r *http.Request) {
 		user = vals[0]
 	}
 
-	data := Req{user, GetIP(r)}
+	data := Req{user, getIP(r)}
 
 	err = t.Execute(w, data)
 	if err != nil {
@@ -59,12 +60,23 @@ func reflect(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetIP(r *http.Request) string {
-	if ipProxy := r.Header.Get("X-FORWARDED-FOR"); len(ipProxy) > 0 {
-		return ipProxy
+func getIP(r *http.Request) string {
+	ip := r.Header.Get("X-REAL-IP")
+	netIP := net.ParseIP(ip)
+	if netIP != nil {
+		return ip
 	}
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
-	return ip
+
+	ips := r.Header.Get("X-FORWARDED-FOR")
+	splitIps := strings.Split(ips, ",")
+	for _, ip := range splitIps {
+		netIP := net.ParseIP(ip)
+		if netIP != nil {
+			return ip
+		}
+	}
+
+	return r.RemoteAddr
 }
 
 type Req struct {
