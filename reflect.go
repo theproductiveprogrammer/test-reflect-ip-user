@@ -10,6 +10,7 @@ func main() {
 	const PORT = "80"
 
 	http.HandleFunc("/", reflect)
+  http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
 
 	fmt.Printf("\nServer started on port %s...\n", PORT)
 	http.ListenAndServe(":"+PORT, nil)
@@ -23,10 +24,15 @@ func reflect(w http.ResponseWriter, r *http.Request) {
   <head>
     <meta charset="UTF-8">
     <title>Welcome {{.User}}</title>
+    <style>
+    .ip { color: #FF5722; }
+    img { width: 100%; }
+    </style>
   </head>
   <body>
     <h1>Welcome {{.User}}</h1>
-    <p>You have originated from IP: {{.IP}}</p>
+    <p class="ip">You have originated from IP: {{.IP}}</p>
+    <p><img src="img/linkedin-sample.png"></p>
   </body>
 </html>
 `
