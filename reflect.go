@@ -30,7 +30,7 @@ func reflect(w http.ResponseWriter, r *http.Request) {
   </head>
   <body>
     <h1>Welcome {{.User}}</h1>
-    <p class="ip">You have originated from IP: {{.IP}}</p>
+    <p class="ip">User request originated from IP: {{.IP}}</p>
     <p><img src="img/linkedin-sample.png"></p>
   </body>
 </html>
