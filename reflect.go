@@ -1,24 +1,23 @@
 package main
 
 import (
-  "fmt"
-  "net/http"
-  "html/template"
+	"fmt"
+	"html/template"
+	"net/http"
 )
 
 func main() {
 	const PORT = "80"
 
 	http.HandleFunc("/", reflect)
-  http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
+	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
 
 	fmt.Printf("\nServer started on port %s...\n", PORT)
 	http.ListenAndServe(":"+PORT, nil)
 }
 
-
 func reflect(w http.ResponseWriter, r *http.Request) {
-  const tpl = `
+	const tpl = `
 <!doctype html>
 <html>
   <head>
@@ -36,24 +35,24 @@ func reflect(w http.ResponseWriter, r *http.Request) {
   </body>
 </html>
 `
-t, err := template.New("index").Parse(tpl)
-if err != nil {
-  w.WriteHeader(500)
-  w.Write([]byte(err.Error()))
-  return
-}
+	t, err := template.New("index").Parse(tpl)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-data := Req{ "Test", "127.0.0.1" }
+	data := Req{"Test", "127.0.0.1"}
 
-err = t.Execute(w, data)
-if err != nil {
-  w.WriteHeader(500)
-  w.Write([]byte(err.Error()))
-}
+	err = t.Execute(w, data)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
+	}
 
 }
 
 type Req struct {
-  User string
-  IP   string
+	User string
+	IP   string
 }
