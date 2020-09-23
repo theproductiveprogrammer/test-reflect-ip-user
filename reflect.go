@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"net"
 	"net/http"
 )
 
@@ -48,7 +49,7 @@ func reflect(w http.ResponseWriter, r *http.Request) {
 		user = vals[0]
 	}
 
-	data := Req{user, r.RemoteAddr}
+	data := Req{user, GetIP(r)}
 
 	err = t.Execute(w, data)
 	if err != nil {
@@ -56,6 +57,14 @@ func reflect(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 	}
 
+}
+
+func GetIP(r *http.Request) string {
+	if ipProxy := r.Header.Get("X-FORWARDED-FOR"); len(ipProxy) > 0 {
+		return ipProxy
+	}
+	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	return ip
 }
 
 type Req struct {
